@@ -135,10 +135,12 @@ public class MainActivity extends Activity {
         mAdapter.add(chatMessage);
     }
 
+
     //check SD card availability
     public static boolean isSDCARDAvailable() {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ? true : false;
     }
+
 
     //copying the file
     private void copyFile(InputStream in, OutputStream out) throws IOException {

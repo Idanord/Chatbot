@@ -3,11 +3,12 @@ package net.michelison.homebitbot;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
-public class BitBotDB {
+public class DatabaseActivity {
 
     // database constants
-    public static final String DB_NAME = "bitbot.db";
+    public static final String DB_NAME = "bitbot.db"; //also wondering if we need another DB but i assume we don't due to a DB holding multiple tables
     public static final int DB_VERSION = 1;
 
     // term table contents
@@ -50,7 +51,7 @@ public class BitBotDB {
             "CREATE TABLE " + DESC_TABLE + " (" +
                     DESC_ID     + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     DESCRIPTION + " STRING NOT NULL, " +
-                    TERM_ID     + " INTEGER FOREIGN KEY); ";
+                    TERM_ID     + " INTEGER REFERENCES "+ TERM_TABLE +");";
 
     public static final String DROP_DESC_TABLE =
             "DROP TABLE IF EXISTS " + DESC_TABLE;
@@ -79,13 +80,58 @@ public class BitBotDB {
         }
 
 
-        // continue from TipCalculatorWithDB-master
+
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+            // this method may be complicated due to the dual table circumstances
+            // we may need both drop table circumstances we may not
+
+            Log.d("TermDB", "Upgrading TermDB from version "
+                + oldVersion + " to " + newVersion);
+
+            db.execSQL(DatabaseActivity.DROP_TERM_TABLE);
+            onCreate(db);
+
+            Log.d("DescriptionDB", "Upgrading DescriptionDB from version "
+            + oldVersion + " to " + newVersion);
+
+            db.execSQL(DatabaseActivity.DROP_DESC_TABLE);
+            onCreate(db);
         }
     }
 
+    // database and database helper objects
+    private SQLiteDatabase db;
+    private DBHelper dbHelper;
+
+
+    // constructor
+    public DatabaseActivity(Context context){
+        dbHelper = new DBHelper(context, DB_NAME, null, DB_VERSION);
+    }
+
+    private void openReadableDB() {
+        db = dbHelper.getReadableDatabase();
+    }
+
+    private void openWriteableDB(){
+        db = dbHelper.getWritableDatabase();
+    }
+
+    private void closeDB() {
+        if(db != null)
+            db.close();
+    }
+
+    // need to add the public methods for BitBotDB
+    // we will be using an ArrayList<Strings>, except we need a hashMap??
+
+    // TODO we need a fileIO.java
+    // TODO we need a JSON object of the Database
+    // TODO We need a SQLDBParser to a hashmap from the RSSItemsActivity File
+    // TODO update and Display FROM ItemsActivity.java RSSNewsFeed
+    // TODO JSONHandler getters and setters
 
 
 

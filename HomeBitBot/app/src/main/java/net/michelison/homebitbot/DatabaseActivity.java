@@ -126,6 +126,8 @@ public class DatabaseActivity {
 
     // need to add the public methods for BitBotDB
     // we will be using an ArrayList<Strings>, except we need a hashMap??
+    // grab info from cvs file with termsDB getters/setters
+
 
     // TODO we need a fileIO.java
     // TODO we need a JSON object of the Database
